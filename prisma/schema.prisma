@@ -1,0 +1,371 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth.js models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
+}
+
+// Main application models
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // NextAuth.js relations
+  accounts Account[]
+  sessions Session[]
+
+  // Application relations
+  trips Trip[]
+
+  @@map("users")
+}
+
+model Trip {
+  id            String      @id @default(cuid())
+  userId        String
+  name          String
+  destination   String
+  description   String?
+  startDate     DateTime
+  endDate       DateTime
+  coverImageUrl String?
+  status        TripStatus  @default(PLANNING)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itineraries     Itinerary[]
+  transportation  Transportation[]
+  accommodation   Accommodation[]
+  activities      Activity[]
+  budget          Budget[]
+  expenses        Expense[]
+  documents       Document[]
+  photos          Photo[]
+  notes           TripNote[]
+
+  @@map("trips")
+}
+
+model Itinerary {
+  id        String   @id @default(cuid())
+  tripId    String
+  date      DateTime
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  trip       Trip                 @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  activities ItineraryActivity[]
+  photos     Photo[]
+
+  @@map("itineraries")
+}
+
+model ItineraryActivity {
+  id          String    @id @default(cuid())
+  itineraryId String
+  activityId  String
+  startTime   DateTime?
+  endTime     DateTime?
+  order       Int
+  notes       String?
+
+  // Relations
+  itinerary Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  activity  Activity  @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@map("itinerary_activities")
+}
+
+model Transportation {
+  id                  String            @id @default(cuid())
+  tripId              String
+  type                TransportType
+  company             String?
+  departureLocation   String
+  arrivalLocation     String
+  departureDatetime   DateTime
+  arrivalDatetime     DateTime
+  confirmationCode    String?
+  price               Decimal?
+  currency            String?
+  notes               String?
+  createdAt           DateTime          @default(now())
+
+  // Relations
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@map("transportation")
+}
+
+model Accommodation {
+  id               String           @id @default(cuid())
+  tripId           String
+  name             String
+  type             AccommodationType
+  address          String
+  latitude         Decimal?
+  longitude        Decimal?
+  checkInDate      DateTime
+  checkOutDate     DateTime
+  pricePerNight    Decimal?
+  totalPrice       Decimal?
+  currency         String?
+  bookingUrl       String?
+  confirmationCode String?
+  rating           Int?
+  notes            String?
+  createdAt        DateTime         @default(now())
+
+  // Relations
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@map("accommodation")
+}
+
+model Activity {
+  id           String           @id @default(cuid())
+  tripId       String
+  name         String
+  category     ActivityCategory
+  address      String?
+  latitude     Decimal?
+  longitude    Decimal?
+  price        Decimal?
+  currency     String?
+  durationHours Decimal?
+  openingHours String?
+  websiteUrl   String?
+  phone        String?
+  notes        String?
+  rating       Int?
+  createdAt    DateTime         @default(now())
+
+  // Relations
+  trip                Trip                 @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  itineraryActivities ItineraryActivity[]
+  photos              Photo[]
+
+  @@map("activities")
+}
+
+model Budget {
+  id            String         @id @default(cuid())
+  tripId        String
+  category      BudgetCategory
+  plannedAmount Decimal
+  actualAmount  Decimal        @default(0)
+  currency      String
+  notes         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  // Relations
+  trip     Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  expenses Expense[]
+
+  @@map("budget")
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  tripId      String
+  budgetId    String?
+  description String
+  amount      Decimal
+  currency    String
+  date        DateTime
+  category    String
+  location    String?
+  receiptUrl  String?
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  trip   Trip    @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  budget Budget? @relation(fields: [budgetId], references: [id])
+
+  @@map("expenses")
+}
+
+model Document {
+  id         String       @id @default(cuid())
+  tripId     String
+  name       String
+  type       DocumentType
+  fileUrl    String
+  fileType   String
+  fileSize   Int
+  expiryDate DateTime?
+  notes      String?
+  createdAt  DateTime     @default(now())
+
+  // Relations
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@map("documents")
+}
+
+model Photo {
+  id           String    @id @default(cuid())
+  tripId       String
+  itineraryId  String?
+  activityId   String?
+  fileUrl      String
+  thumbnailUrl String?
+  caption      String?
+  takenAt      DateTime?
+  latitude     Decimal?
+  longitude    Decimal?
+  createdAt    DateTime  @default(now())
+
+  // Relations
+  trip      Trip       @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  itinerary Itinerary? @relation(fields: [itineraryId], references: [id])
+  activity  Activity?  @relation(fields: [activityId], references: [id])
+
+  @@map("photos")
+}
+
+model TripNote {
+  id        String   @id @default(cuid())
+  tripId    String
+  title     String?
+  content   String
+  type      NoteType @default(GENERAL)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@map("trip_notes")
+}
+
+// Enums
+enum TripStatus {
+  PLANNING
+  ACTIVE
+  COMPLETED
+
+  @@map("trip_status")
+}
+
+enum TransportType {
+  FLIGHT
+  BUS
+  TRAIN
+  CAR
+  BOAT
+  OTHER
+
+  @@map("transport_type")
+}
+
+enum AccommodationType {
+  HOTEL
+  HOSTEL
+  AIRBNB
+  APARTMENT
+  HOUSE
+  OTHER
+
+  @@map("accommodation_type")
+}
+
+enum ActivityCategory {
+  CULTURAL
+  FOOD
+  NATURE
+  ADVENTURE
+  SHOPPING
+  ENTERTAINMENT
+  OTHER
+
+  @@map("activity_category")
+}
+
+enum BudgetCategory {
+  TRANSPORT
+  ACCOMMODATION
+  FOOD
+  ACTIVITIES
+  SHOPPING
+  EMERGENCY
+  OTHER
+
+  @@map("budget_category")
+}
+
+enum DocumentType {
+  PASSPORT
+  VISA
+  TICKET
+  RESERVATION
+  INSURANCE
+  OTHER
+
+  @@map("document_type")
+}
+
+enum NoteType {
+  GENERAL
+  IMPORTANT
+  REMINDER
+  IDEA
+
+  @@map("note_type")
+}
