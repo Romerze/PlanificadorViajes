@@ -17,18 +17,19 @@ import {
 } from '@/components/ui/select';
 import { Loader2, Building2, Home, MapPin, Star } from 'lucide-react';
 
-const accommodationSchema = z.object({
+// Schema para validación del formulario (con strings)
+const accommodationFormSchema = z.object({
   name: z.string().min(1, 'El nombre del hospedaje es requerido'),
   type: z.enum(['HOTEL', 'HOSTEL', 'AIRBNB', 'APARTMENT', 'HOUSE', 'OTHER']),
   address: z.string().min(1, 'La dirección es requerida'),
   checkInDate: z.string().min(1, 'La fecha de check-in es requerida'),
   checkOutDate: z.string().min(1, 'La fecha de check-out es requerida'),
-  pricePerNight: z.string().optional().transform((val) => val && val !== '' ? parseFloat(val) : undefined),
-  totalPrice: z.string().optional().transform((val) => val && val !== '' ? parseFloat(val) : undefined),
+  pricePerNight: z.string().optional(),
+  totalPrice: z.string().optional(),
   currency: z.string().optional(),
   bookingUrl: z.string().url('URL inválida').optional().or(z.literal('')),
   confirmationCode: z.string().optional(),
-  rating: z.string().optional().transform((val) => val && val !== '' && val !== '0' ? parseInt(val) : undefined),
+  rating: z.string().optional(),
   notes: z.string().optional(),
 }).refine((data) => {
   if (data.checkInDate && data.checkOutDate) {
@@ -40,7 +41,24 @@ const accommodationSchema = z.object({
   path: ['checkOutDate'],
 });
 
-type AccommodationFormData = z.infer<typeof accommodationSchema>;
+// Schema para datos de salida (con tipos correctos)
+const accommodationSchema = z.object({
+  name: z.string().min(1, 'El nombre del hospedaje es requerido'),
+  type: z.enum(['HOTEL', 'HOSTEL', 'AIRBNB', 'APARTMENT', 'HOUSE', 'OTHER']),
+  address: z.string().min(1, 'La dirección es requerida'),
+  checkInDate: z.string().min(1, 'La fecha de check-in es requerida'),
+  checkOutDate: z.string().min(1, 'La fecha de check-out es requerida'),
+  pricePerNight: z.number().optional(),
+  totalPrice: z.number().optional(),
+  currency: z.string().optional(),
+  bookingUrl: z.string().url('URL inválida').optional().or(z.literal('')),
+  confirmationCode: z.string().optional(),
+  rating: z.number().optional(),
+  notes: z.string().optional(),
+});
+
+type AccommodationFormData = z.infer<typeof accommodationFormSchema>;
+type AccommodationData = z.infer<typeof accommodationSchema>;
 
 interface Accommodation {
   id: string;
@@ -60,7 +78,7 @@ interface Accommodation {
 
 interface AccommodationFormProps {
   initialData?: Accommodation;
-  onSubmit: (data: AccommodationFormData) => Promise<void>;
+  onSubmit: (data: AccommodationData) => Promise<void>;
   onCancel: () => void;
   isLoading: boolean;
   mode: 'create' | 'edit';
@@ -95,8 +113,8 @@ export function AccommodationForm({
     setValue,
     watch,
     reset
-  } = useForm({
-    resolver: zodResolver(accommodationSchema),
+  } = useForm<AccommodationFormData>({
+    resolver: zodResolver(accommodationFormSchema),
     defaultValues: {
       name: initialData?.name || '',
       type: initialData?.type as any || 'HOTEL',
@@ -142,13 +160,13 @@ export function AccommodationForm({
   const handleFormSubmit = async (data: AccommodationFormData) => {
     try {
       // Transform data for API
-      const submitData = {
+      const submitData: AccommodationData = {
         ...data,
         checkInDate: new Date(data.checkInDate).toISOString(),
         checkOutDate: new Date(data.checkOutDate).toISOString(),
-        pricePerNight: data.pricePerNight || undefined,
-        totalPrice: data.totalPrice || undefined,
-        rating: data.rating || undefined,
+        pricePerNight: data.pricePerNight && data.pricePerNight !== '' ? parseFloat(data.pricePerNight) : undefined,
+        totalPrice: data.totalPrice && data.totalPrice !== '' ? parseFloat(data.totalPrice) : undefined,
+        rating: data.rating && data.rating !== '' && data.rating !== '0' ? parseInt(data.rating) : undefined,
         bookingUrl: data.bookingUrl || undefined,
       };
 
