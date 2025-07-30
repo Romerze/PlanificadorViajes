@@ -17,21 +17,38 @@ import {
 } from '@/components/ui/select';
 import { Loader2, Star } from 'lucide-react';
 
-const activitySchema = z.object({
+// Schema para validación del formulario (con strings)
+const activityFormSchema = z.object({
   name: z.string().min(1, 'El nombre de la actividad es requerido'),
   category: z.enum(['CULTURAL', 'FOOD', 'NATURE', 'ADVENTURE', 'SHOPPING', 'ENTERTAINMENT', 'OTHER']),
   address: z.string().optional(),
-  price: z.string().optional().transform((val) => val && val !== '' ? parseFloat(val) : undefined),
+  price: z.string().optional(),
   currency: z.string().optional(),
-  durationHours: z.string().optional().transform((val) => val && val !== '' ? parseFloat(val) : undefined),
+  durationHours: z.string().optional(),
   openingHours: z.string().optional(),
   websiteUrl: z.string().url('URL inválida').optional().or(z.literal('')),
   phone: z.string().optional(),
   notes: z.string().optional(),
-  rating: z.string().optional().transform((val) => val && val !== '' && val !== '0' ? parseInt(val) : undefined),
+  rating: z.string().optional(),
 });
 
-type ActivityFormData = z.infer<typeof activitySchema>;
+// Schema para datos de salida (con tipos correctos)
+const activitySchema = z.object({
+  name: z.string().min(1, 'El nombre de la actividad es requerido'),
+  category: z.enum(['CULTURAL', 'FOOD', 'NATURE', 'ADVENTURE', 'SHOPPING', 'ENTERTAINMENT', 'OTHER']),
+  address: z.string().optional(),
+  price: z.number().optional(),
+  currency: z.string().optional(),
+  durationHours: z.number().optional(),
+  openingHours: z.string().optional(),
+  websiteUrl: z.string().url('URL inválida').optional().or(z.literal('')),
+  phone: z.string().optional(),
+  notes: z.string().optional(),
+  rating: z.number().optional(),
+});
+
+type ActivityFormData = z.infer<typeof activityFormSchema>;
+type ActivityData = z.infer<typeof activitySchema>;
 
 interface Activity {
   id: string;
@@ -50,7 +67,7 @@ interface Activity {
 
 interface ActivityFormProps {
   initialData?: Activity;
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: ActivityData) => Promise<void>;
   onCancel: () => void;
   isLoading: boolean;
   mode: 'create' | 'edit';
@@ -87,7 +104,7 @@ export function ActivityForm({
     watch,
     reset
   } = useForm<ActivityFormData>({
-    resolver: zodResolver(activitySchema),
+    resolver: zodResolver(activityFormSchema),
     defaultValues: {
       name: initialData?.name || '',
       category: initialData?.category as any || 'CULTURAL',
@@ -109,11 +126,11 @@ export function ActivityForm({
   const handleFormSubmit = async (data: ActivityFormData) => {
     try {
       // Transform data for API
-      const submitData = {
+      const submitData: ActivityData = {
         ...data,
-        price: data.price || undefined,
-        durationHours: data.durationHours || undefined,
-        rating: data.rating || undefined,
+        price: data.price && data.price !== '' ? parseFloat(data.price) : undefined,
+        durationHours: data.durationHours && data.durationHours !== '' ? parseFloat(data.durationHours) : undefined,
+        rating: data.rating && data.rating !== '' && data.rating !== '0' ? parseInt(data.rating) : undefined,
         websiteUrl: data.websiteUrl || undefined,
       };
 
