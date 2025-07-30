@@ -26,14 +26,24 @@ import {
   MoreHorizontal 
 } from 'lucide-react';
 
-const budgetSchema = z.object({
+// Schema para validación del formulario (con strings)
+const budgetFormSchema = z.object({
   category: z.enum(['TRANSPORT', 'ACCOMMODATION', 'FOOD', 'ACTIVITIES', 'SHOPPING', 'EMERGENCY', 'OTHER']),
-  plannedAmount: z.string().min(1, 'El monto planificado es requerido').transform((val) => parseFloat(val)),
+  plannedAmount: z.string().min(1, 'El monto planificado es requerido'),
   currency: z.string().min(1, 'La moneda es requerida'),
   notes: z.string().optional(),
 });
 
-type BudgetFormData = z.infer<typeof budgetSchema>;
+// Schema para datos de salida (con tipos correctos)
+const budgetSchema = z.object({
+  category: z.enum(['TRANSPORT', 'ACCOMMODATION', 'FOOD', 'ACTIVITIES', 'SHOPPING', 'EMERGENCY', 'OTHER']),
+  plannedAmount: z.number().min(0.01, 'El monto planificado debe ser mayor a 0'),
+  currency: z.string().min(1, 'La moneda es requerida'),
+  notes: z.string().optional(),
+});
+
+type BudgetFormData = z.infer<typeof budgetFormSchema>;
+type BudgetData = z.infer<typeof budgetSchema>;
 
 interface Budget {
   id: string;
@@ -46,7 +56,7 @@ interface Budget {
 
 interface BudgetFormProps {
   initialData?: Budget;
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: BudgetData) => Promise<void>;
   onCancel: () => void;
   isLoading: boolean;
   mode: 'create' | 'edit';
@@ -83,7 +93,7 @@ export function BudgetForm({
     watch,
     reset
   } = useForm<BudgetFormData>({
-    resolver: zodResolver(budgetSchema),
+    resolver: zodResolver(budgetFormSchema),
     defaultValues: {
       category: initialData?.category as any || 'TRANSPORT',
       plannedAmount: initialData?.plannedAmount?.toString() || '',
@@ -96,7 +106,13 @@ export function BudgetForm({
 
   const handleFormSubmit = async (data: BudgetFormData) => {
     try {
-      await onSubmit(data);
+      // Transform data for API
+      const submitData: BudgetData = {
+        ...data,
+        plannedAmount: parseFloat(data.plannedAmount),
+      };
+
+      await onSubmit(submitData);
       reset();
     } catch (error) {
       // Error handling is done in parent component
