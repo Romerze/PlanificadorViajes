@@ -1,26 +1,14 @@
 import type { Metadata } from 'next'
-import { Inter, Manrope } from 'next/font/google'
 import '@/styles/globals.css'
 import { cn } from '@/lib/utils'
 import { Providers } from '@/components/layout/providers'
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-})
-
-const manrope = Manrope({
-  subsets: ['latin'],
-  variable: '--font-manrope',
-  display: 'swap',
-})
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
-  title: 'Travel Planner - Plan Your Perfect Trip',
-  description: 'A comprehensive travel planning application to organize, plan, and visualize all aspects of your trips.',
-  keywords: ['travel', 'planning', 'itinerary', 'vacation', 'trip'],
-  authors: [{ name: 'Travel Planner Team' }],
+  title: 'Planificador de Viajes - Planifica tu Viaje Perfecto',
+  description: 'Una aplicación completa de planificación de viajes para organizar, planificar y visualizar todos los aspectos de tus viajes.',
+  keywords: ['viajes', 'planificación', 'itinerario', 'vacaciones', 'turismo', 'perú'],
+  authors: [{ name: 'Planificador de Viajes' }],
   viewport: 'width=device-width, initial-scale=1',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#3b82f6' },
@@ -34,16 +22,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="es-PE" suppressHydrationWarning>
       <body
         className={cn(
-          'min-h-screen bg-background font-sans antialiased',
-          inter.variable,
-          manrope.variable
+          'min-h-screen bg-background font-sans antialiased'
         )}
       >
         <Providers>
           {children}
+          <Toaster />
         </Providers>
       </body>
     </html>

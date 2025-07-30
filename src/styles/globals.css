@@ -1,229 +1,66 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    /* Colors */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 98%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 98%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 98%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 217 91% 60%;
-    --radius: 0.5rem;
-
-    /* Design System Colors */
-    --primary-50: 239 246 255;
-    --primary-100: 219 234 254;
-    --primary-200: 191 219 254;
-    --primary-300: 147 197 253;
-    --primary-400: 96 165 250;
-    --primary-500: 59 130 246;
-    --primary-600: 37 99 235;
-    --primary-700: 29 78 216;
-    --primary-800: 30 64 175;
-    --primary-900: 30 58 138;
-
-    --success-50: 240 253 244;
-    --success-100: 220 252 231;
-    --success-200: 187 247 208;
-    --success-300: 134 239 172;
-    --success-400: 74 222 128;
-    --success-500: 34 197 94;
-    --success-600: 22 163 74;
-    --success-700: 21 128 61;
-    --success-800: 22 101 52;
-    --success-900: 20 83 45;
-
-    --warning-50: 255 247 237;
-    --warning-100: 255 237 213;
-    --warning-200: 254 215 170;
-    --warning-300: 253 186 116;
-    --warning-400: 251 146 60;
-    --warning-500: 249 115 22;
-    --warning-600: 234 88 12;
-    --warning-700: 194 65 12;
-    --warning-800: 154 52 18;
-    --warning-900: 124 45 18;
-
-    --error-50: 254 242 242;
-    --error-100: 254 226 226;
-    --error-200: 254 202 202;
-    --error-300: 252 165 165;
-    --error-400: 248 113 113;
-    --error-500: 239 68 68;
-    --error-600: 220 38 38;
-    --error-700: 185 28 28;
-    --error-800: 153 27 27;
-    --error-900: 127 29 29;
-
-    --gray-50: 248 250 252;
-    --gray-100: 241 245 249;
-    --gray-200: 226 232 240;
-    --gray-300: 203 213 225;
-    --gray-400: 148 163 184;
-    --gray-500: 100 116 139;
-    --gray-600: 71 85 105;
-    --gray-700: 51 65 85;
-    --gray-800: 30 41 59;
-    --gray-900: 15 23 42;
-
-    /* Typography */
-    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-secondary: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-
-    /* Spacing */
-    --space-0: 0;
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.25rem;
-    --space-6: 1.5rem;
-    --space-8: 2rem;
-    --space-10: 2.5rem;
-    --space-12: 3rem;
-    --space-16: 4rem;
-    --space-20: 5rem;
-    --space-24: 6rem;
-    --space-32: 8rem;
-
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-
-    /* Transitions */
-    --transition-fast: 150ms ease-in-out;
-    --transition-base: 200ms ease-in-out;
-    --transition-slow: 300ms ease-in-out;
-
-    /* Module Colors */
-    --transport-flight: 14 165 233;
-    --transport-car: 5 150 105;
-    --transport-train: 124 58 237;
-    --transport-bus: 220 38 38;
-
-    --accommodation-hotel: 194 65 12;
-    --accommodation-hostel: 124 45 18;
-    --accommodation-airbnb: 220 38 38;
-
-    --activity-cultural: 124 58 237;
-    --activity-food: 220 38 38;
-    --activity-nature: 5 150 105;
-    --activity-adventure: 234 88 12;
-    --activity-shopping: 236 72 153;
-    --activity-entertainment: 139 92 246;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217 91% 60%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 217 91% 60%;
-  }
+/* Sistema de diseño - Variables CSS */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 40% 98%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 98%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 98%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 217 91% 60%;
+  --radius: 0.5rem;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-primary);
-  }
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 217 91% 60%;
 }
 
-@layer components {
-  /* Typography Classes */
-  .heading-1 {
-    font-family: var(--font-secondary);
-    @apply text-4xl font-bold leading-tight text-foreground;
-  }
-
-  .heading-2 {
-    font-family: var(--font-secondary);
-    @apply text-3xl font-semibold leading-tight text-foreground;
-  }
-
-  .heading-3 {
-    font-family: var(--font-secondary);
-    @apply text-2xl font-semibold leading-snug text-foreground;
-  }
-
-  .body-large {
-    font-family: var(--font-primary);
-    @apply text-lg font-normal leading-relaxed text-foreground;
-  }
-
-  .body-medium {
-    font-family: var(--font-primary);
-    @apply text-base font-normal leading-normal text-foreground;
-  }
-
-  .body-small {
-    font-family: var(--font-primary);
-    @apply text-sm font-normal leading-normal text-muted-foreground;
-  }
-
-  .caption {
-    font-family: var(--font-primary);
-    @apply text-xs font-medium leading-normal text-muted-foreground uppercase tracking-wide;
-  }
-
-  /* Custom utilities */
-  .glass {
-    @apply bg-white/10 backdrop-blur-sm border border-white/20;
-  }
-
-  .gradient-primary {
-    @apply bg-gradient-to-r from-primary-600 to-primary-500;
-  }
-
-  .gradient-success {
-    @apply bg-gradient-to-r from-success-600 to-success-500;
-  }
-
-  .gradient-warning {
-    @apply bg-gradient-to-r from-warning-600 to-warning-500;
-  }
-
-  .gradient-error {
-    @apply bg-gradient-to-r from-error-600 to-error-500;
-  }
+/* Base styles */
+* {
+  border-color: hsl(var(--border));
 }
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+/* Utilidades personalizadas */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Estilos base para shadcn/ui */

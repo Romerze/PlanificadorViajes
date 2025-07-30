@@ -1,120 +1,62 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Map, Plane, Calendar, CreditCard, FileText, Camera } from 'lucide-react'
-import Link from 'next/link'
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { MapPin, Compass, Mountain, Plane } from 'lucide-react';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-success-50">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden px-6 py-24 sm:py-32 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center">
-          <h1 className="heading-1 text-4xl sm:text-6xl">
-            Plan Your
-            <span className="gradient-primary bg-clip-text text-transparent">
-              {' '}Perfect Trip
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-sky-50 flex items-center justify-center relative overflow-hidden">
+      {/* Nature Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full">
+        <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-br from-green-200/30 to-emerald-300/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-32 right-16 w-80 h-80 bg-gradient-to-tl from-blue-200/30 to-sky-300/40 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/3 w-48 h-48 bg-gradient-to-br from-teal-200/20 to-cyan-300/30 rounded-full blur-2xl" />
+      </div>
+
+      {/* Mountain Silhouettes */}
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-slate-200/20 to-transparent">
+        <svg viewBox="0 0 1200 200" className="w-full h-full">
+          <path d="M0,200 L200,80 L400,120 L600,40 L800,100 L1000,60 L1200,140 L1200,200 Z" fill="rgba(34, 197, 94, 0.1)" />
+          <path d="M0,200 L150,120 L350,160 L550,90 L750,140 L950,100 L1200,180 L1200,200 Z" fill="rgba(14, 165, 233, 0.08)" />
+        </svg>
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
+        
+        {/* Adventure Badge */}
+        <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-emerald-200/60 rounded-full px-6 py-3 mb-8 shadow-lg">
+          <Mountain className="h-4 w-4 text-emerald-600" />
+          <span className="text-emerald-800 font-medium text-sm">Tu próxima aventura comienza aquí</span>
+        </div>
+
+        {/* Main Hero */}
+        <div className="mb-12">
+          <h1 className="text-6xl lg:text-7xl font-bold text-slate-800 leading-tight mb-6">
+            Planifica tu
+            <span className="block bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-600 bg-clip-text text-transparent">
+              Gran Aventura
             </span>
           </h1>
-          <p className="body-large mt-6 text-lg leading-8 text-gray-600">
-            Organize, plan, and visualize all aspects of your travels in one place. 
-            From flights to activities, budget to memories - we've got you covered.
+          <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed mb-10">
+            Organiza itinerarios únicos, descubre destinos increíbles y vive experiencias que recordarás para siempre.
           </p>
-          <div className="mt-10 flex items-center justify-center gap-x-6">
-            <Button asChild size="lg">
-              <Link href="/dashboard">Get Started</Link>
-            </Button>
-            <Button variant="outline" size="lg" asChild>
-              <Link href="/auth/signin">Sign In</Link>
-            </Button>
-          </div>
         </div>
-      </section>
 
-      {/* Features Section */}
-      <section className="py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="heading-2">Everything you need for your trip</h2>
-            <p className="body-medium mt-4 text-gray-600">
-              A comprehensive suite of tools to make travel planning effortless and enjoyable.
-            </p>
-          </div>
-          
-          <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-            <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
-              {features.map((feature) => (
-                <div key={feature.name} className="flex flex-col">
-                  <Card className="h-full transition-all hover:shadow-lg">
-                    <CardHeader>
-                      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary-100">
-                        <feature.icon className="h-6 w-6 text-primary-600" />
-                      </div>
-                      <CardTitle className="text-lg">{feature.name}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription className="body-small">
-                        {feature.description}
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
-            </dl>
-          </div>
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
+          <Button asChild size="lg" className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold px-8 py-4 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+            <Link href="/dashboard">
+              <Compass className="mr-2 h-5 w-5" />
+              Comenzar a Explorar
+            </Link>
+          </Button>
+          <Button variant="outline" size="lg" asChild className="border-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50 font-semibold px-8 py-4 text-lg backdrop-blur-sm bg-white/50 hover:text-gray-500">
+            <Link href="/auth/signin">
+              <MapPin className="mr-2 h-4 w-4" />
+              Ver Destinos
+            </Link>
+          </Button>
         </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-primary-600 py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="heading-2 text-white">
-              Ready to plan your next adventure?
-            </h2>
-            <p className="body-medium mt-6 text-primary-100">
-              Join thousands of travelers who trust us to organize their perfect trips.
-            </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button variant="secondary" size="lg" asChild>
-                <Link href="/dashboard">Start Planning</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
-  )
+  );
 }
-
-const features = [
-  {
-    name: 'Smart Itinerary Planning',
-    description: 'Create detailed day-by-day itineraries with activities, timing, and location mapping.',
-    icon: Calendar,
-  },
-  {
-    name: 'Transportation Management',
-    description: 'Track flights, trains, buses, and other transportation with confirmation codes and schedules.',
-    icon: Plane,
-  },
-  {
-    name: 'Budget Tracking',
-    description: 'Set budgets by category and track expenses in real-time to stay on target.',
-    icon: CreditCard,
-  },
-  {
-    name: 'Interactive Maps',
-    description: 'Visualize your trip with interactive maps showing activities, hotels, and routes.',
-    icon: Map,
-  },
-  {
-    name: 'Document Storage',
-    description: 'Securely store tickets, reservations, passports, and other important travel documents.',
-    icon: FileText,
-  },
-  {
-    name: 'Photo Gallery',
-    description: 'Organize and preserve your travel memories with geotagged photo galleries.',
-    icon: Camera,
-  },
-]
