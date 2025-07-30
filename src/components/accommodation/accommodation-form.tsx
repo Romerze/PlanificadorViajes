@@ -60,7 +60,7 @@ interface Accommodation {
 
 interface AccommodationFormProps {
   initialData?: Accommodation;
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: AccommodationFormData) => Promise<void>;
   onCancel: () => void;
   isLoading: boolean;
   mode: 'create' | 'edit';
