@@ -22,7 +22,7 @@ import {
   Trash2,
   Clock,
   MapPin,
-  DragHandleDots2Icon as GripVertical
+  GripVertical
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
