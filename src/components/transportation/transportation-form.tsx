@@ -17,7 +17,8 @@ import {
 } from '@/components/ui/select';
 import { Loader2, Plane, Bus, Train, Car, Ship } from 'lucide-react';
 
-const transportationSchema = z.object({
+// Schema para validación del formulario (con strings)
+const transportationFormSchema = z.object({
   type: z.enum(['FLIGHT', 'BUS', 'TRAIN', 'CAR', 'BOAT', 'OTHER']),
   company: z.string().optional(),
   departureLocation: z.string().min(1, 'La ubicación de salida es requerida'),
@@ -25,7 +26,7 @@ const transportationSchema = z.object({
   departureDatetime: z.string().min(1, 'La fecha y hora de salida es requerida'),
   arrivalDatetime: z.string().min(1, 'La fecha y hora de llegada es requerida'),
   confirmationCode: z.string().optional(),
-  price: z.string().optional().transform((val) => val && val !== '' ? parseFloat(val) : undefined),
+  price: z.string().optional(),
   currency: z.string().optional(),
   notes: z.string().optional(),
 }).refine((data) => {
@@ -38,7 +39,22 @@ const transportationSchema = z.object({
   path: ['arrivalDatetime'],
 });
 
-type TransportationFormData = z.infer<typeof transportationSchema>;
+// Schema para datos de salida (con tipos correctos)
+const transportationSchema = z.object({
+  type: z.enum(['FLIGHT', 'BUS', 'TRAIN', 'CAR', 'BOAT', 'OTHER']),
+  company: z.string().optional(),
+  departureLocation: z.string().min(1, 'La ubicación de salida es requerida'),
+  arrivalLocation: z.string().min(1, 'La ubicación de llegada es requerida'),
+  departureDatetime: z.string().min(1, 'La fecha y hora de salida es requerida'),
+  arrivalDatetime: z.string().min(1, 'La fecha y hora de llegada es requerida'),
+  confirmationCode: z.string().optional(),
+  price: z.number().optional(),
+  currency: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+type TransportationFormData = z.infer<typeof transportationFormSchema>;
+type TransportationData = z.infer<typeof transportationSchema>;
 
 interface Transportation {
   id: string;
@@ -56,7 +72,7 @@ interface Transportation {
 
 interface TransportationFormProps {
   initialData?: Transportation;
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: TransportationData) => Promise<void>;
   onCancel: () => void;
   isLoading: boolean;
   mode: 'create' | 'edit';
@@ -92,7 +108,7 @@ export function TransportationForm({
     watch,
     reset
   } = useForm<TransportationFormData>({
-    resolver: zodResolver(transportationSchema),
+    resolver: zodResolver(transportationFormSchema),
     defaultValues: {
       type: initialData?.type as any || 'FLIGHT',
       company: initialData?.company || '',
@@ -114,11 +130,11 @@ export function TransportationForm({
   const handleFormSubmit = async (data: TransportationFormData) => {
     try {
       // Transform data for API
-      const submitData = {
+      const submitData: TransportationData = {
         ...data,
         departureDatetime: new Date(data.departureDatetime).toISOString(),
         arrivalDatetime: new Date(data.arrivalDatetime).toISOString(),
-        price: data.price || undefined,
+        price: data.price && data.price !== '' ? parseFloat(data.price) : undefined,
       };
 
       await onSubmit(submitData);

@@ -23,9 +23,10 @@ import {
   DollarSign
 } from 'lucide-react';
 
-const expenseSchema = z.object({
+// Schema para validación del formulario (con strings)
+const expenseFormSchema = z.object({
   description: z.string().min(1, 'La descripción es requerida'),
-  amount: z.string().min(1, 'El monto es requerido').transform((val) => parseFloat(val)),
+  amount: z.string().min(1, 'El monto es requerido'),
   currency: z.string().min(1, 'La moneda es requerida'),
   date: z.string().min(1, 'La fecha es requerida'),
   category: z.string().min(1, 'La categoría es requerida'),
@@ -35,7 +36,21 @@ const expenseSchema = z.object({
   budgetId: z.string().optional(),
 });
 
-type ExpenseFormData = z.infer<typeof expenseSchema>;
+// Schema para datos de salida (con tipos correctos)
+const expenseSchema = z.object({
+  description: z.string().min(1, 'La descripción es requerida'),
+  amount: z.number().min(0.01, 'El monto debe ser mayor a 0'),
+  currency: z.string().min(1, 'La moneda es requerida'),
+  date: z.string().min(1, 'La fecha es requerida'),
+  category: z.string().min(1, 'La categoría es requerida'),
+  location: z.string().optional(),
+  receiptUrl: z.string().url('URL inválida').optional().or(z.literal('')),
+  notes: z.string().optional(),
+  budgetId: z.string().optional(),
+});
+
+type ExpenseFormData = z.infer<typeof expenseFormSchema>;
+type ExpenseData = z.infer<typeof expenseSchema>;
 
 interface Expense {
   id: string;
@@ -58,7 +73,7 @@ interface Budget {
 interface ExpenseFormProps {
   initialData?: Expense;
   budgets: Budget[];
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: ExpenseData) => Promise<void>;
   onCancel: () => void;
   isLoading: boolean;
   mode: 'create' | 'edit';
@@ -96,7 +111,7 @@ export function ExpenseForm({
     watch,
     reset
   } = useForm<ExpenseFormData>({
-    resolver: zodResolver(expenseSchema),
+    resolver: zodResolver(expenseFormSchema),
     defaultValues: {
       description: initialData?.description || '',
       amount: initialData?.amount?.toString() || '',
@@ -117,8 +132,9 @@ export function ExpenseForm({
   const handleFormSubmit = async (data: ExpenseFormData) => {
     try {
       // Transform data for API
-      const submitData = {
+      const submitData: ExpenseData = {
         ...data,
+        amount: parseFloat(data.amount),
         date: new Date(data.date).toISOString(),
         receiptUrl: data.receiptUrl || undefined,
         budgetId: data.budgetId && data.budgetId !== 'none' ? data.budgetId : undefined,
