@@ -403,7 +403,7 @@ export function DocumentForm({
             className={`flex-1 ${errors.expiryDate ? 'border-red-500' : ''}`}
           />
         </div>
-        {watch('expiryDate') && isExpiringSoon(watch('expiryDate')) && (
+        {watch('expiryDate') && isExpiringSoon(watch('expiryDate')!) && (
           <div className="flex items-center gap-2 text-orange-600">
             <AlertTriangle className="h-4 w-4" />
             <p className="text-sm">Este documento vence pronto</p>
